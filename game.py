@@ -1,10 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Mar 22 20:17:47 2026
+"""This is a test client of the code gamefunctions"""
 
-@author: jameshoenstine
-"""
+
 
 from gamefunctions import(
     print_welcome,
