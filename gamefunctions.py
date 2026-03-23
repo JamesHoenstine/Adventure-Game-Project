@@ -1,4 +1,4 @@
-"""This program implements game functions, adding new fucntions regulary.
+"""This program implements game functions, adding new functions regulary.
 
 This code is constantly being worked on and added upon itself.
 Each assignment will add new functions to this code.
