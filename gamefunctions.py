@@ -138,22 +138,22 @@ def random_monster():
     
     if odds == 1:
         my_monster["name"] = "Ghoul"
-        my_monster["description"] = "This is an old lost soul who wanders the wastes.He pays attention to no one. He ignores you and lets you go."
+        my_monster["description"] = "This is an old lost soul who wanders the wastes.He pays attention to you and you fight!."
         my_monster["health"] = random.randint(1,6)
-        my_monster["power"] = random.randint(1,6)
-        my_monster["money"] = " 5 sand dollars"
+        my_monster["power"] = random.randint(2,8)
+        my_monster["money"] = 5
     elif odds == 2:
         my_monster["name"] = "Warewolf"
-        my_monster["description"] = "AWOOOOOOOOOO!!! The moon shines bright tonight.Your hear the howl of this beast....run!"
+        my_monster["description"] = "AWOOOOOOOOOO!!! The moon shines bright tonight.Your hear the howl of this beast... and he attacks!"
         my_monster["health"] = random.randint(1,6)
-        my_monster["power"] = random.randint(1,6)
-        my_monster["money"] = "3 silver bullets"
+        my_monster["power"] = random.randint(3,6)
+        my_monster["money"] = 3
     elif odds == 3:
         my_monster["name"] = "Wurm"
-        my_monster["description"] = "Wiggle Wiggle Wiggle...JK its A GAINT WURM DESCENDED FROM DRAGONS.... Hide!"
+        my_monster["description"] = "Wiggle Wiggle Wiggle...JK its A GAINT WURM DESCENDED FROM DRAGONS....you fight!"
         my_monster["health"] = random.randint(1,6)
-        my_monster["power"] = random.randint(1,6)
-        my_monster["money"] = " 1 dirt"
+        my_monster["power"] = random.randint(3,6)
+        my_monster["money"] = 1
         
 
 
@@ -192,6 +192,25 @@ def test_functions():
     monster = random_monster()
     print("Dictionary returned:",monster)
     
+    
+    
+def snapping_turtle_inn(gold,hp):
+    print("Welcome to the Inn, we have many beds available.")
+    print("The cost for a night is 5 gold and the sleep is so good it will restore your HP by 10 points!")
+    print("Would you like to stay? ")
+    
+    y_n = input("Yes or No").lower().strip()
+   
+    if y_n == "yes":
+        if gold >= 5:
+            hp +=10
+            gold -=5
+            print("You sleep like a rock")
+            print(f"Gold reamining {gold},Health {hp}")
+    else:
+        print("Sleep is overrated anyways.")
+    
+    return gold, hp   
 
 if __name__== "__main__":
     test_functions()
