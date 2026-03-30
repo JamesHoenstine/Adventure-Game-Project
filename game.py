@@ -7,7 +7,7 @@ from gamefunctions import (
     print_shop_menu,
     purchase_item,
     random_monster,
-    snapping_turtle_inn
+    snapping_turtle_inn,
 )
 
 
@@ -18,7 +18,7 @@ def main():
     name = input("Enter your name:")
     print(f"Greetings {name}! You are in Sneep kingdom. ")
     
-    hp = 30
+    hp = 5
     power = random.randint(1,3)
     gold = 60    
 
@@ -31,46 +31,42 @@ def main():
     
     while adventuring:
         path = input(
-            " \n Adventure beyond the kingdoms walls(quest)."
-            " \n Rest at the Snapping Turtle Inn(rest)."
-            " \n Abandon this adventure(quit).\n"
+            " \nAdventure beyond the kingdoms walls(quest)."
+            " \nRest at the Snapping Turtle Inn(rest)."
+            " \nAbandon this adventure(quit).\n"
             "Input:"
             ).lower().strip()
         
         if path == "quest":
+            print(f"Your HP is: {hp} and power: {power}")
             monster = random_monster()
-            print("A battle occurs!!")
-            hp -= monster["power"]
-            monster['health'] -= power
-            print(f"The {monster['name']} attacks you and your health goes down to {hp}")
-            print(f"You attack back and the {monster['name']}'s health goes down to {monster['health']} ")
-            choice = input(
-                "\nDo you continue this fight?"
-                "\nYes or No"
-                "\nInput:"
-                ).lower().strip()
-            if choice == "yes":
-                while hp > 0 and   monster['health'] > 0:
-                    hp -= monster['power']
-                    monster['health'] -= power
-                    gold +=  monster['money']
-                    
-                    if monster['health'] > hp:
-                        run = input(
-                        "\nDo you flee or keep fighting?"
-                        "\nYes or No"
-                        "\n Input:"
-                        ).lower().strip()
-                    elif monster['health'] < 0:
-                        break
-                        print("You have slayed the monster! You have been awared with the wealth that the monster possed.")
-                        print(f"Your HP:{hp} and power:{power}, The {monster['name']} HP: {monster['health']} and power: {monster['power']}")
-                        print(f"Total gold:{gold}")
-                    elif hp < 0:
-                        break
-                        print("The monster has got the best of you... YIKES!!!")
-            else:
-                print("Retreat!!!!!!")
+            while hp > 0 and monster['health'] > 0:
+                a_f = input(f"You encountered a monster, do you attack (attack) or flee (flee)").lower().strip()
+                
+                if a_f == "attack":
+                  monster['health'] -= power
+                  hp -= monster['power']
+                  print(f"Monster health {monster['health']}, and your health {hp}")
+                elif a_f == "flee":
+                  print("You have fleed!")
+                  break
+                
+                else:
+                    print("Invalid input... try again")
+                
+            if hp <= 0:
+                print("You have fallen to the monster")
+                break
+            elif monster['health'] <= 0:
+                print("You have beat the monster!")
+                gold += monster['money']
+                break
+            
+  #        hp, gold =  monster_quest(hp, power, gold)
+         
+        
+        
+        
         
         elif path == "rest":
             
@@ -80,7 +76,10 @@ def main():
             print(f"Until next time, {name}!")
             print("The gates of Sneep Kingdom close behind you.")
             adventuring = False
+        else:
+            print("Invalid input...try again")
             
+    
     
 
 main()
