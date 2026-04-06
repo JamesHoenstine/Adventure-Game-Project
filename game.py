@@ -1,13 +1,18 @@
 """This is a test client of the code gamefunctions"""
 
 import random
+import sys
 
 from gamefunctions import (
     print_welcome,
-    print_shop_menu,
+    bazaar_menu,
     purchase_item,
     random_monster,
     snapping_turtle_inn,
+    enter_bazaar,
+    items,
+    inventory,
+    equip_item
 )
 
 
@@ -18,12 +23,12 @@ def main():
     name = input("Enter your name:")
     print(f"Greetings {name}! You are in Sneep kingdom. ")
     
-    hp = 5
+    hp = 50
     power = random.randint(1,3)
-    gold = 60    
+    gold = 50    
 
     
-    print(f"Current HP:{hp}, Current Gold:{gold}")
+    print(f"Current HP:{hp}, Current Gold:{gold}, Current Power:{power}")
     
     print("The Kingdom hums with activity. Where shall your curiosity lead you? ")
 
@@ -33,7 +38,9 @@ def main():
         path = input(
             " \nAdventure beyond the kingdoms walls(quest)."
             " \nRest at the Snapping Turtle Inn(rest)."
-            " \nAbandon this adventure(quit).\n"
+           " \nAquire wares at the bazaar(shop)."
+           "\nCheck inventory(check) and equip items."
+            "\nAbandon this adventure(quit).\n"
             "Input:"
             ).lower().strip()
         
@@ -46,6 +53,14 @@ def main():
                 if a_f == "attack":
                   monster['health'] -= power
                   hp -= monster['power']
+                  
+                  for item in inventory:
+                      if item['name'] == "phantasmaclasm":
+                          print("Phantasmaclasm is a one use spell, it is now gone")
+                          inventory.remove(item)
+                          power = 2
+                          break
+                              
                   print(f"Monster health {monster['health']}, and your health {hp}")
                 elif a_f == "flee":
                   print("You have fleed!")
@@ -60,11 +75,9 @@ def main():
             elif monster['health'] <= 0:
                 print("You have beat the monster!")
                 gold += monster['money']
-                break
-            
-  #        hp, gold =  monster_quest(hp, power, gold)
-         
-        
+                
+                  
+              
         
         
         
@@ -72,13 +85,57 @@ def main():
             
             gold, hp = snapping_turtle_inn(gold, hp)
         
+        elif path == "shop":
+            enter_bazaar(items,gold)
+        
+        elif path == "check":
+            checking = True
+            while checking:
+                print(f" Your inventory contians: {inventory}")
+                print(f" Your current power:{power}")
+                choice = input("\nWould you like to equip an item? (equip) or go back (back)").lower().strip()
+                
+                if choice == "equip":
+                    
+                    power = equip_item(items,power)
+                elif choice == "back":
+                    checking = False
+                
+                else:
+                    print("Invalid input")
+        
         elif path == "quit":
             print(f"Until next time, {name}!")
             print("The gates of Sneep Kingdom close behind you.")
-            adventuring = False
+            sys.exit()
         else:
             print("Invalid input...try again")
             
+'''    
+    items ={
+        "name": "sword", "type": "weapon", "power": 10, "integrity": 43,
+        "name": "stick", "type": "weapon", "power": 1, "integrity": 1,
+        "name": "Phantasmaclasm", "type": "spell", "power": 1000, "life force":"half",
+        "name": "Sneepers", "type": "pet", "power": 1, "health": 1000,
+        "name": "Beans", "type": "Pinto"
+        }
+    
+    def attack(weapon):
+        weapon["integrity"] -= 10
+        if weapon["integrity"] <= 20:
+            print(f"Waring: Your{weapon['name']} is about to break!")
+        elif weapon["integrity"] <=0:
+            print(f"Your {weapon['name']} shattered!")
+            
+   ''' 
+    
+    
+    
+    
+    
+    
+    
+    
     
     
 
