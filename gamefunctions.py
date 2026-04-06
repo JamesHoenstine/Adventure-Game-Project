@@ -16,6 +16,175 @@ repersent the data input.
 import random
 
 
+
+
+items =[
+    {"name": "sword", "type": "weapon", "power": 10, "integrity": 43, "price": 10},
+    {"name": "stick", "type": "weapon", "power": 1, "integrity": 1, "price": 1},
+    {"name": "phantasmaclasm", "type": "spell", "power": 1000, "life force":"half", "price": 25},
+    {"name": "sneepers", "type": "pet", "power": 1, "health": 1000, "price": 5},
+    {"name": "beans", "type": "Pinto", "price": 1}
+    ]
+
+def attack(weapon):
+    weapon["integrity"] -= 10
+    if weapon["integrity"] <= 20:
+        print(f"Waring: Your{weapon['name']} is about to break!")
+    elif weapon["integrity"] <=0:
+        print(f"Your {weapon['name']} shattered!")
+        
+
+
+
+
+#Assignment 4 a menu for items with prices.
+def bazaar_menu(items,gold):
+    """
+
+    Parameters
+    ----------
+    item1 : (str)
+        The item that is first.
+    price1 : (float)
+        The price of the first item.
+    item2 : (str)
+        The item that is second.
+    price2 : (float)
+        The price of the second item.
+
+    Returns
+    -------
+    None.
+    
+    """
+    print(f"//{'-'*25}\\")
+    for item in items:
+       
+        name = item["name"]
+        price = item["price"]
+        
+        print(f"| {name:<14}{price:>9} |")
+    
+    print(f"\\{'-'*25}//")
+
+inventory = [ 
+    {"name": "Water", "type": "drink"},
+
+  
+    
+    ]
+
+def enter_bazaar(items,gold):
+    print("WELCOME TO THE BAZAAR")
+    print("Sneepers the pet chirps at you from the shelf.")
+    print("You interupt the shop keeper while he is having his lunch.")
+    print("Hello traveler! My name is Mordecai, everyhting is for sale... even my lunch.")
+    
+    
+    shopping = True
+    while shopping:
+        bazaar_menu(items,gold)
+    
+        purchase = input("What would you like to buy? If nothing type'exit'.")
+    
+        if purchase == "exit":
+            shopping = False
+            print("You have left the Bazaar.")
+        
+        else:
+            item_purchased = False
+        
+            for item in items:
+            
+                if purchase == item["name"].lower():
+                    item_purchased = True
+            
+                    if gold >= item["price"]:
+                        gold -= item["price"]
+                        inventory.append(item)
+                        print(f"You have aquired {item['name']} for {item['price']} gold.")
+                        print(f"You have {gold} gold pieces left")
+            
+                    else:
+                        print(f"Mordecai: 'You are short on coin, traveler.'")
+                    break
+            if not item_purchased:
+                print(f"Mordecai: 'Werid I have never heard of such a thing!'")
+   
+        
+   
+    
+def equip_item(items,power):
+    
+    item_found = False
+    
+    print("Equiping an item which has power stats increases your own power!")
+    
+        
+    equip_items = input("Which item would you like to equip?").lower().strip()
+        
+    for item in inventory:
+        if equip_items == item["name"].lower():
+            item_found = True
+            
+            if "power" in item:
+                power += item["power"]
+                print(f"You have equipped {item["name"]} and your power is now {power}")
+            else:
+                print("That item has no power")
+            
+            
+            break
+            
+    if not item_found:
+        print("You dont own that item.")
+            
+    
+    
+    return power
+
+    
+       
+    
+   
+    
+"""     
+        if purchase == "sword":
+            gold -= 10
+            inventory.append("sword")
+            print("Sword added to inventory!")
+        elif purchase == "stick":
+            gold -= 1
+            inventory.append("stick")
+            print("Stick added to inventory!")
+            
+        elif purchase == "Phantasmaclasm":
+            gold -= 25
+            inventory.append("Phantasmaclasm")
+            print("Phantasmaclasm added to inventory!")
+            
+        elif purchase == "Sneepers":
+            gold -= 5
+            inventory.append("Sneepers")
+            print("Sneepers added to inventory!")
+                
+        elif purchase == "Beans":
+            gold -= 1
+            inventory.append("Beans")
+            print("Beans added to inventory!")
+            
+        elif purchase == "exit":
+            shopping = False
+        else:
+            print("Invalid input")
+
+
+    """
+
+
+
+
+
 #Assignment 3 a welcome greeting.
 def print_welcome(name,width):
     """
@@ -38,34 +207,6 @@ def print_welcome(name,width):
 
 
 
-
-#Assignment 4 a menu for items with prices.
-def print_shop_menu(item1,price1,item2,price2):
-    """
-
-    Parameters
-    ----------
-    item1 : (str)
-        The item that is first.
-    price1 : (float)
-        The price of the first item.
-    item2 : (str)
-        The item that is second.
-    price2 : (float)
-        The price of the second item.
-
-    Returns
-    -------
-    None.
-    
-    """
-    price1 = f"${price1:.2f}"
-    price2 = f"${price2:.2f}"
-    
-    print(f"//{'-'*21}\\")
-    print(f"| {item1:<12}{price1:>8} |")
-    print(f"| {item2:<12}{price2:>8} |")
-    print(f"\\{'-'*21}//")
     
 
 
