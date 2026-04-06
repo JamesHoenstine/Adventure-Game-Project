@@ -111,26 +111,7 @@ def main():
         else:
             print("Invalid input...try again")
             
-'''    
-    items ={
-        "name": "sword", "type": "weapon", "power": 10, "integrity": 43,
-        "name": "stick", "type": "weapon", "power": 1, "integrity": 1,
-        "name": "Phantasmaclasm", "type": "spell", "power": 1000, "life force":"half",
-        "name": "Sneepers", "type": "pet", "power": 1, "health": 1000,
-        "name": "Beans", "type": "Pinto"
-        }
-    
-    def attack(weapon):
-        weapon["integrity"] -= 10
-        if weapon["integrity"] <= 20:
-            print(f"Waring: Your{weapon['name']} is about to break!")
-        elif weapon["integrity"] <=0:
-            print(f"Your {weapon['name']} shattered!")
-            
-   ''' 
-    
-    
-    
+
     
     
     
