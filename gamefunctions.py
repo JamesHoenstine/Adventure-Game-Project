@@ -18,6 +18,85 @@ import random
 
 
 
+import json
+
+data = {
+        "HP": 20,
+        "Power": random.randint(1,3),
+        "Gold": 25
+        }
+
+
+def load_game(filename):
+    '''
+    
+
+    Parameters
+    ----------
+    filename : TYPE
+        This will allow you to reload from a json file.
+
+    Returns
+    -------
+    TYPE
+        player, hp , power, gold and inventory.
+
+    '''
+        
+    if not filename.endswith(".json"):
+            filename += ".json"
+        
+    try:
+            
+        with open(filename, 'r') as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError):
+        
+        print("Generating new file")
+        return {
+            "player": {
+                "name": "Scholar",
+                "HP": 20,
+                "Power": 2,
+                "Gold":25,
+                "inventory":[]
+                }
+            }
+                
+            
+
+
+
+def save_game(filename, player_dictionary):
+    """
+    
+
+    Parameters
+    ----------
+    filename : TYPE
+        This allows you to save the json file to reload later.
+    
+
+    Returns
+    -------
+    None.
+
+    """
+    
+    data_save = {"player": player_dictionary}
+    
+    if not filename.endswith(".json"):
+            filename += ".json"
+        
+    
+    with open(filename, 'w') as file:
+        json.dump(data_save, file, indent=4)
+    print("Progress saved!")
+
+
+
+
+
 items =[
     {"name": "sword", "type": "weapon", "power": 10, "integrity": 43, "price": 10},
     {"name": "stick", "type": "weapon", "power": 1, "integrity": 1, "price": 1},
@@ -111,7 +190,7 @@ def enter_bazaar(items,gold):
             if not item_purchased:
                 print(f"Mordecai: 'Werid I have never heard of such a thing!'")
    
-        
+    return gold
    
     
 def equip_item(items,power):
@@ -148,38 +227,7 @@ def equip_item(items,power):
     
    
     
-"""     
-        if purchase == "sword":
-            gold -= 10
-            inventory.append("sword")
-            print("Sword added to inventory!")
-        elif purchase == "stick":
-            gold -= 1
-            inventory.append("stick")
-            print("Stick added to inventory!")
-            
-        elif purchase == "Phantasmaclasm":
-            gold -= 25
-            inventory.append("Phantasmaclasm")
-            print("Phantasmaclasm added to inventory!")
-            
-        elif purchase == "Sneepers":
-            gold -= 5
-            inventory.append("Sneepers")
-            print("Sneepers added to inventory!")
-                
-        elif purchase == "Beans":
-            gold -= 1
-            inventory.append("Beans")
-            print("Beans added to inventory!")
-            
-        elif purchase == "exit":
-            shopping = False
-        else:
-            print("Invalid input")
 
-
-    """
 
 
 
