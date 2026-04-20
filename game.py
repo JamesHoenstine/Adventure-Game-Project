@@ -2,6 +2,7 @@
 
 import random
 import sys
+import pygame
 
 from gamefunctions import (
     print_welcome,
@@ -14,7 +15,8 @@ from gamefunctions import (
     inventory,
     equip_item,
     load_game,
-    save_game
+    save_game,
+    explore_map
 )
  
 
@@ -56,8 +58,6 @@ def main():
             "Power": 2,
             "Gold":25,
             "inventory":[]
-            
-            
             }
         print(f"Greetings {name}! You are in Sneep kingdom. ")
     
@@ -73,7 +73,7 @@ def main():
     
     while adventuring:
         path = input(
-            " \nAdventure beyond the kingdoms walls(quest)."
+            " \nExplore beyond the walls of Sneep Kingdom!(explore)."
             " \nRest at the Snapping Turtle Inn(rest)."
            " \nAquire wares at the bazaar(shop)."
            "\nCheck inventory(check) and equip items."
@@ -81,46 +81,16 @@ def main():
             "Input:"
             ).lower().strip()
         
-        if path == "quest":
-            print(f"Your HP is: {p['HP']} and power: {p['Power']}")
-            monster = random_monster()
-            while p['HP'] > 0 and monster['health'] > 0:
-                a_f = input(f"You encountered a monster, do you attack (attack) or flee (flee)").lower().strip()
-                
-                if a_f == "attack":
-                  monster['health'] -= p['Power']
-                  p['HP'] -= monster['power']
-                  
-                  for item in inventory:
-                      if item['name'] == "phantasmaclasm":
-                          print("Phantasmaclasm is a one use spell, it is now gone")
-                          inventory.remove(item)
-                          p['Power'] = 2
-                          break
-                              
-                  print(f"Monster health {monster['health']}, and your health {p['HP']}")
-                elif a_f == "flee":
-                  print("You have fleed!")
-                  break
-                
-                else:
-                    print("Invalid input... try again")
-                
-            if p['HP'] <= 0:
-                print("You have fallen to the monster")
-                break
-            elif monster['health'] <= 0:
-                print("You have beat the monster!")
-                p['Gold'] += monster['money']
-                
-                  
-              
-        
-        
+        if path == "explore":
+            print("This is the world map... many objects lay and wait")
+            explore_map(p, inventory, items,file_load)
+
+           
+            
         
         elif path == "rest":
             
-             p['Gold'], p['HP'] = snapping_turtle_inn(p['Gold'], {p['HP']})
+             p['Gold'], p['HP'] = snapping_turtle_inn(p['Gold'], p['HP'])
         
         elif path == "shop":
            p['Gold'] = enter_bazaar(items,p['Gold'])
@@ -134,7 +104,7 @@ def main():
                 
                 if choice == "equip":
                     
-                    power = equip_item(items,p['Power'])
+                    p['Power'] = equip_item(items,p['Power'])
                 elif choice == "back":
                     checking = False
                 
@@ -153,7 +123,7 @@ def main():
     
     
     
-    
+  
     
 
 

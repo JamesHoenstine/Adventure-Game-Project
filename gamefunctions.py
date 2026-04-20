@@ -15,8 +15,8 @@ repersent the data input.
 
 import random
 
-
-
+import sys
+import pygame
  
 import json
 
@@ -25,6 +25,212 @@ data = {
         "Power": random.randint(1,3),
         "Gold": 25
         }
+
+
+
+
+def explore_map(p, inventory, items,file_load): # This will let the user interpret the map and interact.
+    
+    
+
+ pygame.init()
+
+ screen_width = 520
+ screen_height = 320
+ map_width = 320
+
+ screen = pygame.display.set_mode((screen_width,screen_height))
+ text_font = pygame.font.SysFont("Arial", 18)
+ text_image = text_font.render("Sneeps Map", True, (255,0,255))
+ stats = text_font.render(f"STATS", True, (255,255,255))
+ you = text_font.render(f"YOU", True, (255,255,255))
+ mapp = text_font.render(f"Town", True, (0,255,0))
+ monst = text_font.render(f"Monster", True, (255,0,0))
+ cont = text_font.render(f"CONTROLS", True, (170,170,170))
+ cont2 = text_font.render(f"Arrow keys to move", True, (170,170,170))
+
+ player_x = 0
+ player_y = 0
+ 
+ tile = 32
+ grid = 10
+
+ town_x = 7 * tile
+ town_y = 8 * tile
+
+ monster_x = 1 * tile
+ monster_y = 1 * tile
+
+ run = True
+
+ while run:
+     stat = text_font.render(f"HP:  {p['HP']}", True, (255,255,255))
+     stat2 = text_font.render(f"Power:  {p['Power']}", True, (255,255,255))
+     stat3 = text_font.render(f"Gold:  {p['Gold']}", True, (255,255,255))
+     
+     screen.fill((0,0,0))
+     pygame.draw.circle(screen, (0, 255, 0), (town_x + 16, town_y + 16), 16)
+     pygame.draw.rect(screen, (255, 255, 255), (player_x, player_y, tile, tile))
+     pygame.draw.circle(screen, (255, 0, 0), (monster_x + 16, monster_y + 16), 16)
+     
+     screen.blit(text_image, (map_width + 10, 10))
+     pygame.draw.line(screen, (150,150,150), (map_width + 10, 35), (map_width + 190, 35), 1)
+     screen.blit(stats, (map_width + 10, 35))
+     screen.blit(stat, (map_width + 10, 60))
+     screen.blit(stat2, (map_width + 10, 85))
+     screen.blit(stat3, (map_width + 10, 110))
+     pygame.draw.line(screen, (150,150,150), (map_width + 10, 140), (map_width + 190, 140), 1)
+     screen.blit(you, (map_width + 10, 150))
+     pygame.draw.rect(screen, (255, 255, 255), (map_width + 95, 155, 10,10))
+     screen.blit(mapp, (map_width + 10, 175))
+     pygame.draw.circle(screen, (0, 255, 0), (map_width+ 100, 185), 10)
+     screen.blit(monst, (map_width + 10, 200))
+     pygame.draw.circle(screen, (255, 0, 0), (map_width+ 100, 210), 10)
+     pygame.draw.line(screen, (150,150,150), (map_width + 10, 225), (map_width + 190, 225), 1)
+     screen.blit(cont, (map_width + 10, 230))
+     screen.blit(cont2, (map_width + 10, 250))
+
+     
+     for event in pygame.event.get():
+         if event.type == pygame.QUIT:
+             run = False
+              
+        
+         if event.type == pygame.KEYDOWN:
+             
+             if event.key == pygame.K_LEFT:
+                 if player_x > 0: player_x -= tile
+                 print("You moved left")
+             elif event.key == pygame.K_RIGHT:
+                 if player_x < (grid - 1) * tile: player_x += tile
+                 print("You moved right")
+             elif event.key == pygame.K_UP:
+                 if player_y > 0: player_y -= tile
+                 print("You moved up")
+             elif event.key == pygame.K_DOWN:
+                 if player_y < (grid - 1) * tile: player_y += tile
+                 print("You moved down")
+ 
+ 
+     if player_x == monster_x and player_y == monster_y:
+         print("You have encounted a monster!")
+         print(f"Your HP is: {p['HP']} and power: {p['Power']}")
+         monster = random_monster()
+         
+         while p['HP'] > 0 and monster['health'] > 0:
+             a_f = input(f"You encountered a monster, do you attack (attack) or flee (flee)").lower().strip()
+                 
+             if a_f == "attack":
+                  monster['health'] -= p['Power']
+                  p['HP'] -= monster['power']
+                   
+                  for item in inventory:
+                      if item['name'] == "phantasmaclasm":
+                           print("Phantasmaclasm is a one use spell, it is now gone")
+                           inventory.remove(item)
+                           p['Power'] = 2
+                           break
+                               
+                  print(f"Monster health {monster['health']}, and your health {p['HP']}")
+             elif a_f == "flee":
+                   print("You have fleed!")
+                   player_x += tile
+                   pygame.display.update()
+                   break
+                 
+             else:
+                     print("Invalid input... try again")
+                 
+             if p['HP'] <= 0:
+                 print("You have fallen to the monster")
+                 break
+         
+             elif monster['health'] <= 0:
+                 print("You have beat the monster!")
+                 p['Gold'] += monster['money']
+                 print("Back to Exploration!")
+                 player_x += tile
+                 pygame.display.update()
+              
+     
+     if player_x == town_x and player_y == town_y:    
+         in_town = True
+         
+         while in_town:
+             print("\nWelcome back to Sneep Kingdom!")
+             path_2 = input(
+              " \nExplore beyond the walls of Sneep Kingdom!(leave)."
+              " \nRest at the Snapping Turtle Inn(rest)."
+             " \nAquire wares at the bazaar(shop)."
+             "\nCheck inventory(check) and equip items."
+             "\nSave and Quit(quit)"
+              "Input:"
+              ).lower().strip()
+             
+           
+             if path_2 == "rest":
+                 
+                  p['Gold'], p['HP'] = snapping_turtle_inn(p['Gold'], p['HP'])
+             
+             elif path_2 == "shop":
+                p['Gold'] = enter_bazaar(items,p['Gold'])
+             
+             elif path_2 == "check":
+                 checking = True
+                 while checking:
+                     print(f" Your inventory contians: {inventory}")
+                     print(f" Your current power:{p['Power']}")
+                     choice = input("\nWould you like to equip an item? (equip) or go back (back)").lower().strip()
+                     
+                     if choice == "equip":
+                         
+                         p['Power'] = equip_item(items,p['Power'])
+                     elif choice == "back":
+                         checking = False
+             elif path_2 == "leave":
+                         print("You adventure back out!")
+                         player_x -= tile
+                         in_town = False
+                     
+             elif path_2 == "quit":
+                print(f"Until next time!")
+                print("The gates of Sneep Kingdom close behind you.")
+                save_game(file_load, p)
+                sys.exit()            
+             else:
+                print("Invalid input")
+             
+            
+     
+         
+             
+             
+             
+             
+     
+     pygame.display.update()
+     
+     
+     
+ pygame.display.quit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 def load_game(filename):
@@ -49,7 +255,13 @@ def load_game(filename):
     try:
             
         with open(filename, 'r') as file:
-            return json.load(file)
+            data = json.load(file)
+            player = data['player']
+            player['HP'] = player.get('HP') or 20
+            player['Gold'] = player.get('Gold') or 25
+            player['Power'] = player.get('Power') or 2
+            return data
+        
     except (FileNotFoundError, json.JSONDecodeError):
         
         print("Generating new file")
