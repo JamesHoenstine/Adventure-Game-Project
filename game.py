@@ -28,7 +28,7 @@ def main():
     global data, p
     
     print("---- Sneep Kingdom Loader ----")
-    
+    print("File name is what your last save was under")
     file_load = input("Enter your file name or type 'new':")
     
     if file_load =="new":
@@ -43,6 +43,8 @@ def main():
     if data:
         p = data['player']
         name = p.get('name')
+        inventory.clear()
+        inventory.extend(p.get('inventory',[]))
         
         print(f"Welcome back {name}!")
     else:
@@ -50,7 +52,9 @@ def main():
         
     
         name = input("Enter your name:")
-        file_load = name.lower() + "json"
+        file_load = name.lower() + ".json"
+        print(f"Your file name is {name}")
+        
         
         p = {
             "name": name,
@@ -112,6 +116,7 @@ def main():
                     print("Invalid input")
         
         elif path == "quit":
+            p['inventory'] = inventory
             print(f"Until next time, {name}!")
             print("The gates of Sneep Kingdom close behind you.")
             save_game(file_load, p)
