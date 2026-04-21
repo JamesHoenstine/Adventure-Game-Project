@@ -29,6 +29,7 @@ data = {
 
 
 
+
 def explore_map(p, inventory, items,file_load): # This will let the user interpret the map and interact.
     
     

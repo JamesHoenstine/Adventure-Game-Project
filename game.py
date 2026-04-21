@@ -24,6 +24,7 @@ from gamefunctions import (
 
 
 
+
 def main():
     global data, p
     
