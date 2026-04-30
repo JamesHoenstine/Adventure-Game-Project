@@ -19,6 +19,8 @@ import sys
 import pygame
  
 import json
+from WanderingMonster import WanderingMonster
+
 
 data = {
         "HP": 20,
@@ -30,7 +32,7 @@ data = {
 
 
 
-def explore_map(p, inventory, items,file_load): # This will let the user interpret the map and interact.
+def explore_map(p, inventory, items,file_load,state): # This will let the user interpret the map and interact.
     
     
 
@@ -70,9 +72,13 @@ def explore_map(p, inventory, items,file_load): # This will let the user interpr
      stat3 = text_font.render(f"Gold:  {p['Gold']}", True, (255,255,255))
      
      screen.fill((0,0,0))
+     
      pygame.draw.circle(screen, (0, 255, 0), (town_x + 16, town_y + 16), 16)
      pygame.draw.rect(screen, (255, 255, 255), (player_x, player_y, tile, tile))
-     pygame.draw.circle(screen, (255, 0, 0), (monster_x + 16, monster_y + 16), 16)
+     
+     for monster in state["monsters"]:
+
+         pygame.draw.circle(screen, (255, 0, 0), (monster.x * tile + 16, monster.y * tile + 16), 16)
      
      screen.blit(text_image, (map_width + 10, 10))
      pygame.draw.line(screen, (150,150,150), (map_width + 10, 35), (map_width + 190, 35), 1)
@@ -100,66 +106,119 @@ def explore_map(p, inventory, items,file_load): # This will let the user interpr
          if event.type == pygame.KEYDOWN:
              
              if event.key == pygame.K_LEFT:
-                 if player_x > 0: player_x -= tile
+                 if player_x > 0:
+                     player_x -= tile
+                     for monster in state["monsters"]:
+                         monster.x += random.choice([-1, 0 , 1])
+                         monster.x = max(0, min(grid - 1, monster.x))
+                         monster.y = max(0, min(grid - 1, monster.y))
                  print("You moved left")
              elif event.key == pygame.K_RIGHT:
-                 if player_x < (grid - 1) * tile: player_x += tile
+                 if player_x < (grid - 1) * tile:
+                     player_x += tile
+                     for monster in state["monsters"]:
+                         monster.x -= random.choice([-1, 0 , 1])
+                         monster.x = max(0, min(grid - 1, monster.x))
+                         monster.y = max(0, min(grid - 1, monster.y))
                  print("You moved right")
              elif event.key == pygame.K_UP:
-                 if player_y > 0: player_y -= tile
+                 if player_y > 0:
+                     player_y -= tile
+                     for monster in state["monsters"]:
+                         monster.y -= random.choice([-1, 0 , 1])
+                         monster.x = max(0, min(grid - 1, monster.x))
+                         monster.y = max(0, min(grid - 1, monster.y))
                  print("You moved up")
              elif event.key == pygame.K_DOWN:
-                 if player_y < (grid - 1) * tile: player_y += tile
+                 if player_y < (grid - 1) * tile:
+                     player_y += tile
+                     for monster in state["monsters"]:
+                         monster.y += random.choice([-1, 0 , 1])
+                         monster.x = max(0, min(grid - 1, monster.x))
+                         monster.y = max(0, min(grid - 1, monster.y))
                  print("You moved down")
  
- 
-     if player_x == monster_x and player_y == monster_y:
-         print("You have encounted a monster!")
-         print(f"Your HP is: {p['HP']} and power: {p['Power']}")
-         monster = random_monster()
+     for monster in state["monsters"]:
+         if monster.x * tile == town_x and monster.y * tile == town_y:
+             for monster in state["monsters"]:
+                 monster.y += random.choice([-1, 0 , 1])
+         if player_x == monster.x * tile and player_y == monster.y * tile:
+             print(f"You have encounted a {monster.monster_type}!")
+             print(f"The monster has HP: {state['monsters'][0].hp} and power: {state['monsters'][0].power}")
+             print(f"Your HP is: {p['HP']} and power: {p['Power']}")
+             
+             monster.x != town_x and monster.y != town_y
          
-         while p['HP'] > 0 and monster['health'] > 0:
-             a_f = input(f"You encountered a monster, do you attack (attack) or flee (flee)").lower().strip()
+             while p['HP'] > 0 and monster.hp > 0:
+                a_f = input(f"You encountered a monster, do you attack (attack) or flee (flee)").lower().strip()
                  
-             if a_f == "attack":
-                  monster['health'] -= p['Power']
-                  p['HP'] -= monster['power']
+                if a_f == "attack":
+                    monster.hp -= p['Power']
+                    p['HP'] -= monster.power
+                    print(f" monster hp : {monster.hp} your hp:{p['HP']}")
                    
-                  for item in inventory:
+                    for item in inventory:
                       if item['name'] == "phantasmaclasm":
                            print("Phantasmaclasm is a one use spell, it is now gone")
                            inventory.remove(item)
                            p['Power'] = 2
                            break
                                
-                  print(f"Monster health {monster['health']}, and your health {p['HP']}")
-             elif a_f == "flee":
+                      print(f"Monster health {monster.hp}, and your health {p['HP']}")
+                elif a_f == "flee":
                    print("You have fleed!")
                    player_x += tile
                    pygame.display.update()
                    break
                  
-             else:
+                else:
                      print("Invalid input... try again")
                  
              if p['HP'] <= 0:
                  print("You have fallen to the monster")
-                 break
+                 print("GAME OVER")
+                 run = False
+                 sys.exit()
+             
          
-             elif monster['health'] <= 0:
+             elif monster.hp <= 0:
                  print("You have beat the monster!")
-                 p['Gold'] += monster['money']
+                 p['Gold'] += monster.money
                  print("Back to Exploration!")
+                 state["monsters"].remove(monster)
+                 
+                 monster_type = [
+                    {"name": "Witch", "color": "purple", "hp": 10, "power": 5,"money": 10},
+                    {"name": "Bat", "color": "red", "hp": 4, "power": 2, "money": 4},
+                    {"name": "Ghost", "color": "grey", "hp": 3, "power": 1, "money": 2},
+                    ]
+                 remaining = [i for i in monster_type if i["name"] != monster.monster_type]
+                 chosen = random.choice(remaining)
+                 state["monsters"].append(
+                         WanderingMonster(
+                             x=random.randint(0,9), 
+                             y=random.randint(0,9),
+                             monster_type = chosen["name"],
+                             color = chosen["color"],
+                             hp = chosen["hp"],
+                             power = chosen["power"],
+                             money = chosen["money"]
+                             ))
+                                          
+                                        
+                 
+                 
                  player_x += tile
                  pygame.display.update()
+                 break
               
      
-     if player_x == town_x and player_y == town_y:    
-         in_town = True
+         if player_x == town_x and player_y == town_y:    
+           in_town = True
          
-         while in_town:
-             print("\nWelcome back to Sneep Kingdom!")
-             path_2 = input(
+           while in_town:
+              print("\nWelcome back to Sneep Kingdom!")
+              path_2 = input(
               " \nExplore beyond the walls of Sneep Kingdom!(leave)."
               " \nRest at the Snapping Turtle Inn(rest)."
              " \nAquire wares at the bazaar(shop)."
@@ -169,14 +228,14 @@ def explore_map(p, inventory, items,file_load): # This will let the user interpr
               ).lower().strip()
              
            
-             if path_2 == "rest":
+              if path_2 == "rest":
                  
                   p['Gold'], p['HP'] = snapping_turtle_inn(p['Gold'], p['HP'])
              
-             elif path_2 == "shop":
-                p['Gold'] = enter_bazaar(items,p['Gold'])
+              elif path_2 == "shop":
+                 p['Gold'] = enter_bazaar(items,p['Gold'])
              
-             elif path_2 == "check":
+              elif path_2 == "check":
                  checking = True
                  while checking:
                      print(f" Your inventory contians: {inventory}")
@@ -188,17 +247,17 @@ def explore_map(p, inventory, items,file_load): # This will let the user interpr
                          p['Power'] = equip_item(items,p['Power'])
                      elif choice == "back":
                          checking = False
-             elif path_2 == "leave":
+              elif path_2 == "leave":
                          print("You adventure back out!")
                          player_x -= tile
                          in_town = False
                      
-             elif path_2 == "quit":
+              elif path_2 == "quit":
                 print(f"Until next time!")
                 print("The gates of Sneep Kingdom close behind you.")
                 save_game(file_load, p)
                 sys.exit()            
-             else:
+              else:
                 print("Invalid input")
              
             

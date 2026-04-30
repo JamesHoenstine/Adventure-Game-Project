@@ -3,6 +3,7 @@
 import random
 import sys
 import pygame
+from WanderingMonster import WanderingMonster
 
 from gamefunctions import (
     print_welcome,
@@ -75,7 +76,25 @@ def main():
     print("The Kingdom hums with activity. Where shall your curiosity lead you? ")
 
     adventuring = True
-    
+   
+    monster_type = [
+       {"name": "Witch", "color": "purple", "hp": 10, "power": 5,"money": 10 },
+       {"name": "Bat", "color": "red", "hp": 4, "power": 2, "money": 4},
+       {"name": "Ghost", "color": "grey", "hp": 3, "power": 1, "money": 2},
+       ]
+    chosen = random.choice(monster_type)
+    state = {
+        "monsters":[
+            WanderingMonster(x=random.randint(0,9), y=random.randint(0,9),
+                             monster_type = chosen["name"],
+                             color = chosen["color"],
+                             hp = chosen["hp"],
+                             power = chosen["power"],
+                             money = chosen["money"]
+                             )
+                             ]}
+        
+
     while adventuring:
         path = input(
             " \nExplore beyond the walls of Sneep Kingdom!(explore)."
@@ -88,7 +107,7 @@ def main():
         
         if path == "explore":
             print("This is the world map... many objects lay and wait")
-            explore_map(p, inventory, items,file_load)
+            explore_map(p, inventory, items,file_load,state)
 
            
             
