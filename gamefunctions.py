@@ -32,7 +32,7 @@ data = {
 
 
 
-def explore_map(p, inventory, items,file_load,state): # This will let the user interpret the map and interact.
+def explore_map(p, inventory, items,file_load,state): 
     
     
 
